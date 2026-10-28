@@ -1,7 +1,7 @@
 # PokeDex
 
-A small iOS app for browsing Pokémon, built as a portfolio piece to demo architecture,
-concurrency, and testing practices in an interview setting — not a production app.
+A small iOS app for browsing Pokémon, built as a portfolio piece to demo architecture and
+concurrency practices in an interview setting — not a production app.
 
 Data comes from the free, no-auth [PokeAPI](https://pokeapi.co).
 
@@ -15,10 +15,7 @@ Data comes from the free, no-auth [PokeAPI](https://pokeapi.co).
   (`APIClientProtocol`, `PokemonRepositoryProtocol`, `FavoritesStoring`), injected through
   initializers from one composition root (`AppContainer`). No DI framework — the object
   graph is small enough that it doesn't need one.
-- **SwiftData** for local persistence (favorites), behind a `FavoritesStoring` protocol so
-  view models can be tested against an in-memory fake instead of a real store.
-- **Swift Testing** (`import Testing`, `@Test`, `#expect`) instead of XCTest, for the unit
-  test suite.
+- **SwiftData** for local persistence (favorites), behind a `FavoritesStoring` protocol.
 
 ## Architecture
 
@@ -36,8 +33,6 @@ FavoritesStore (SwiftData, protocol-backed)
 
 Each arrow is a protocol boundary. The view model never imports `Foundation`'s networking
 types or SwiftData — it only knows about `PokemonRepositoryProtocol` and `FavoritesStoring`.
-That's what makes `PokemonListViewModelTests` able to test pagination, search debouncing,
-and error states without a network connection or a real database.
 
 ### Layers
 
@@ -64,10 +59,3 @@ and error states without a network connection or a real database.
    [XcodeGen](https://github.com/yonaskolb/XcodeGen) — if you ever change `project.yml`,
    re-run `xcodegen generate`).
 2. Build & run on any iOS 17+ simulator. No API key, no config needed.
-
-To run tests: `Cmd+U` in Xcode, or:
-
-```sh
-xcodebuild -project PokeDex.xcodeproj -scheme PokeDex \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
-```
