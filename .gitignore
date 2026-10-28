@@ -13,3 +13,6 @@ xcuserdata/
 # CocoaPods / Carthage (unused here, kept for safety)
 Pods/
 Carthage/Build/
+
+# Personal interview prep notes — kept local, never pushed
+INTERVIEW_NOTES.md
