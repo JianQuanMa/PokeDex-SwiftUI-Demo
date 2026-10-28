@@ -24,4 +24,8 @@ final class AppContainer {
     func makeDetailViewModel(for summary: PokemonSummary) -> PokemonDetailViewModel {
         PokemonDetailViewModel(summary: summary, repository: repository, favoritesStore: favoritesStore)
     }
+
+    func makeFavoritesListViewModel() -> FavoritesListViewModel {
+        FavoritesListViewModel(favoritesStore: favoritesStore)
+    }
 }

@@ -6,10 +6,7 @@ struct PokeDexApp: App {
 
     var body: some Scene {
         WindowGroup {
-            PokemonListView(
-                viewModel: container.makeListViewModel(),
-                makeDetailViewModel: container.makeDetailViewModel(for:)
-            )
+            RootView(container: container)
         }
     }
 }

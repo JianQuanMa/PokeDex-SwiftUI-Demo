@@ -1,4 +1,5 @@
 import Foundation
+import Observation
 import SwiftData
 
 /// Protocol seam over favorites persistence, so view models can be unit
@@ -6,14 +7,22 @@ import SwiftData
 @MainActor
 protocol FavoritesStoring: AnyObject {
     var favoriteIDs: Set<Int> { get }
+    var favoritePokemons: [PokemonSummary] { get }
     func isFavorite(id: Int) -> Bool
     func toggleFavorite(id: Int, name: String)
 }
 
+/// `@Observable` so screens that read `isFavorite`/`favoritePokemons` —
+/// even indirectly, through a view model's computed property — are
+/// automatically re-rendered when a favorite is added or removed.
+/// Without this, SwiftUI has no way to know the SwiftData-backed state
+/// underneath changed.
 @MainActor
+@Observable
 final class FavoritesStore: FavoritesStoring {
     private let modelContext: ModelContext
     private(set) var favoriteIDs: Set<Int> = []
+    private(set) var favoritePokemons: [PokemonSummary] = []
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -42,7 +51,11 @@ final class FavoritesStore: FavoritesStoring {
     }
 
     private func refresh() {
-        let all = try? modelContext.fetch(FetchDescriptor<FavoritePokemon>())
-        favoriteIDs = Set((all ?? []).map(\.id))
+        let descriptor = FetchDescriptor<FavoritePokemon>(
+            sortBy: [SortDescriptor(\.addedAt, order: .reverse)]
+        )
+        let all = (try? modelContext.fetch(descriptor)) ?? []
+        favoriteIDs = Set(all.map(\.id))
+        favoritePokemons = all.map { PokemonSummary(id: $0.id, name: $0.name) }
     }
 }

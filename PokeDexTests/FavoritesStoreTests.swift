@@ -27,6 +27,8 @@ struct FavoritesStoreTests {
         store.toggleFavorite(id: 4, name: "charmander")
 
         #expect(store.favoriteIDs == [1, 4])
+        #expect(Set(store.favoritePokemons.map(\.id)) == [1, 4])
+        #expect(Set(store.favoritePokemons.map(\.name)) == ["bulbasaur", "charmander"])
     }
 
     private static func makeStore() throws -> FavoritesStore {
